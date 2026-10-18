@@ -20,7 +20,7 @@ GROQ_MODEL=openai/gpt-oss-20b
 
 `GROQ_MODEL` defaults to `openai/gpt-oss-20b`. The allowlist also permits `openai/gpt-oss-120b`, which supports the same strict output mode and documented base free-plan token limits. Other models fail closed until their strict-output support and budgets are reviewed. There are no `VITE_` credentials, public key fields or browser provider calls.
 
-The Vite dev middleware serves `/api/untangle` locally. `npm run preview` is a **static** preview and does not run the API; the local parser still works there. Use `npm run dev` or `vercel dev` for the full application. Native Vercel local emulation is not verified; the built-in Vite API path is verified.
+The Vite dev middleware serves `/api/untangle` locally. `npm run preview` is a **static** preview and does not run the API; the local parser still works there. Use `npm run dev` or `vercel dev` for the full application. Native Vercel local emulation is not verified; the built-in Vite API path is verified. See [VERCEL_API_VERIFICATION.md](VERCEL_API_VERIFICATION.md) for the production ESM startup repair, actual Vercel-builder verification and status-specific error handling.
 
 ## How to use
 

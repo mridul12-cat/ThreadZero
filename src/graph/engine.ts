@@ -1,5 +1,5 @@
-import { calendarContext } from "../parser/context";
-import type { Task, Edge } from "../storage/types";
+import { calendarContext } from "../parser/context.js";
+import type { Task, Edge } from "../storage/types.js";
 export function descendants(id: string, edges: Edge[]): Set<string> {
   const seen = new Set<string>();
   const queue = [id];

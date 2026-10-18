@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Sparkles, ShieldCheck, X } from "lucide-react";
 import { COOLDOWN_SECONDS } from "./contract";
 import { calendarContext, type CalendarContext } from "../parser/context";
-import { validateProposal } from "./domain";
+import { MagicRequestError, requestMagicProposal } from "./request";
 import type { Proposal } from "./contract";
 export default function MagicCapture({
   text,
@@ -56,46 +56,28 @@ export default function MagicCapture({
     const source = text;
     const abort = new AbortController();
     controller.current = abort;
-    const timeout = setTimeout(() => abort.abort(), 25000);
+    let timedOut = false;
+    const timeout = setTimeout(() => {
+      timedOut = true;
+      abort.abort();
+    }, 25000);
     cooldown(COOLDOWN_SECONDS);
     try {
       const context = calendarContext();
-      const response = await fetch("/api/untangle", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: source, consent: true, ...context }),
-        signal: abort.signal,
-      });
-      if (response.status === 429)
-        cooldown(
-          Math.min(
-            86400,
-            Math.max(
-              COOLDOWN_SECONDS,
-              Number(response.headers.get("Retry-After")) || COOLDOWN_SECONDS,
-            ),
-          ),
-        );
-      if (!response.headers.get("Content-Type")?.includes("application/json"))
-        throw new Error(
-          "Magic needs its API server. Run npm run dev or deploy with Vercel; the local parser is available here.",
-        );
-      const data = (await response.json()) as {
-        proposal?: unknown;
-        error?: unknown;
-      };
-      if (!response.ok)
-        throw new Error(
-          typeof data.error === "string"
-            ? data.error
-            : "Magic Untangle is unavailable. Use the local parser.",
-        );
-      const proposal = validateProposal(data.proposal, { source, ...context });
+      const proposal = await requestMagicProposal(
+        source,
+        context,
+        abort.signal,
+      );
       onProposal(proposal, source, context);
     } catch (e) {
+      if (e instanceof MagicRequestError && e.retryAfter)
+        cooldown(e.retryAfter);
       setError(
         abort.signal.aborted
-          ? "Magic was cancelled or timed out. Your workspace was not changed."
+          ? timedOut
+            ? "Magic Untangle timed out. Your workspace was not changed."
+            : "Magic was cancelled. Your workspace was not changed."
           : e instanceof Error
             ? e.message
             : "Magic is unavailable. Your workspace was not changed.",

@@ -1,4 +1,4 @@
-import type { Proposal } from "./contract";
+import type { Proposal } from "./contract.js";
 import {
   isActionTitle,
   isEventTitle,
@@ -6,7 +6,7 @@ import {
   parseDeadline,
   resolveDate,
   type CalendarContext,
-} from "../parser/context";
+} from "../parser/context.js";
 export interface ProposalContext extends CalendarContext {
   source: string;
 }

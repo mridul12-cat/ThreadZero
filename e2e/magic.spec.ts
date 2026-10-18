@@ -124,3 +124,48 @@ test("staying local never calls the API", async ({ page }) => {
   ).toBeVisible();
   expect(calls).toBe(0);
 });
+
+for (const [status, message] of [
+  [404, "not found"],
+  [500, "server could not"],
+] as const) {
+  test(`Vercel text error ${status} has a specific message and working local fallback`, async ({
+    page,
+  }) => {
+    await page.route("**/api/untangle", (route) =>
+      route.fulfill({
+        status,
+        contentType: "text/plain",
+        body: "FUNCTION_INVOCATION_FAILED",
+      }),
+    );
+    await page.goto("/");
+    await page
+      .getByRole("textbox", { name: "Your thoughts" })
+      .fill("Buy tuna. Email my teacher.");
+    await page
+      .getByRole("button", { name: "Magic Untangle", exact: true })
+      .click();
+    await page.getByRole("button", { name: "Send this text to Groq" }).click();
+    await expect(page.getByRole("alert")).toContainText(message);
+    await expect(page.getByRole("alert")).not.toContainText(
+      "needs its API server",
+    );
+    await page
+      .getByRole("button", { name: /Use the local parser instead/ })
+      .click();
+    await expect(
+      page.getByRole("heading", { name: "2 little things to untangle" }),
+    ).toBeVisible();
+  });
+}
+
+test("Vite development serves the actual API route without using Groq quota", async ({
+  request,
+}) => {
+  const response = await request.get("/api/untangle");
+  expect(response.status()).toBe(405);
+  expect(response.headers()["content-type"]).toContain("application/json");
+  expect(response.headers()["allow"]).toBe("POST");
+  expect((await response.json()).error).toContain("POST");
+});

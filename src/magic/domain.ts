@@ -1,8 +1,8 @@
-import { normalizeProposal, type ProposalContext } from "./normalize";
-import { calendarContext, type CalendarContext } from "../parser/context";
-import { proposalSchema, type Proposal } from "./contract";
-import { makeTask, type Workspace, type Edge, uid } from "../storage/types";
-import { validateEdge } from "../graph/engine";
+import { normalizeProposal, type ProposalContext } from "./normalize.js";
+import { calendarContext, type CalendarContext } from "../parser/context.js";
+import { proposalSchema, type Proposal } from "./contract.js";
+import { makeTask, type Workspace, type Edge, uid } from "../storage/types.js";
+import { validateEdge } from "../graph/engine.js";
 export function validateProposal(
   value: unknown,
   context?: ProposalContext,

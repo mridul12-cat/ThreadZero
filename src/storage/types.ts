@@ -1,4 +1,4 @@
-import { isActionTitle, statedDuration } from "../parser/context";
+import { isActionTitle, statedDuration } from "../parser/context.js";
 import { z } from "zod";
 const taskObject = z.object({
   id: z.string().min(1).max(100),

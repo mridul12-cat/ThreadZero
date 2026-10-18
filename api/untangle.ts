@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
-import { createUntangleService } from "../server/untangle";
+import { createUntangleService } from "../server/untangle.js";
 export const config = { maxDuration: 30 };
 const service = createUntangleService(process.env, {
   requireDistributed: true,
