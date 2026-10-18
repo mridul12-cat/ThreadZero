@@ -32,4 +32,10 @@ Deploy from the repository root. Set server-only `GROQ_API_KEY` and the configur
 
 After deployment, GET `/api/untangle` should return JSON 405 with `Allow: POST`, proving the function loaded. An empty JSON POST should return JSON 400 when the Groq configuration is present, or JSON 503 when it is missing. Both probes avoid provider usage. A valid inference additionally requires correct production credentials and shared-budget configuration.
 
+## Hosted verification after push
+
+Vercel successfully deployed commit `b12ac57`. The production URL then returned JSON **405** for GET and JSON **400** for an invalid POST, with no `FUNCTION_INVOCATION_FAILED` header. This confirms that the function startup failure is repaired in the actual deployment.
+
+One valid synthetic request (“Buy tuna before feeding the cat”) returned JSON **503** from the existing shared-budget gate. This occurred before Groq inference, so no provider request was made. The gate could not use its configured Redis service; without access to the Vercel environment or Redis account, missing variables, invalid credentials and service failure cannot be distinguished. The next required step is to check Production `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN`, retain the free-plan service, and redeploy if variables change. The protection was not removed or replaced with an unsafe per-instance counter. Successful hosted inference remains unverified until this configuration is corrected.
+
 References: [Vercel Node functions](https://vercel.com/docs/functions/runtimes/node-js), [Vite on Vercel](https://vercel.com/docs/frameworks/frontend/vite). These document the root API convention and separate frontend/function deployment; the import failure above was established by execution.
