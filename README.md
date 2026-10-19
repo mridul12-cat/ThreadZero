@@ -122,14 +122,3 @@ For the classic experience, deploy the contents of `dist/` to any static HTTPS h
 - Large maps require navigation or list view. Dragged map positions last only for the current map session. Mobile uses accessible task lists.
 - Free-plan hosting and provider billing settings are deployment responsibilities. This repository does not promise unlimited free cloud usage.
 
-## Suggested 90-second demo
-
-1. **0–10s:** Open the empty capture screen; explain “A lot on your mind?”
-2. **10–25s:** Type or record a short thought. Use voice only after a successful physical-browser smoke test; label the text/example path honestly.
-3. **25–40s:** Untangle, edit a title/effort, and confirm a suggested connection.
-4. **40–55s:** Load **The Presentation Panic** (replacement confirmation if needed). Explore the real map or mobile list; inspect prerequisites.
-5. **55–70s:** Finish “Choose a presentation topic.” Explain why the outline still needs Alex’s research. Complete the email and see recommendations change. Use Undo.
-6. **70–85s:** Preview “What if I finish this?” on the research wait; show the non-destructive preview, then exit.
-7. **85–90s:** Open Focus: “You don’t need to solve everything. Just find the first thread.”
-
-See [ARCHITECTURE.md](ARCHITECTURE.md) and [REFINEMENT_VERIFICATION.md](REFINEMENT_VERIFICATION.md) for the current algorithms and actual test outcomes. Earlier reports describe earlier builds.
